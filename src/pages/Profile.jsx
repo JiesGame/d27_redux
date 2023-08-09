@@ -1,30 +1,25 @@
-import { useEffect } from 'react';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeNames, changeSkills } from '../store';
 
 export const Profile = () => {
   const [inputs, setInputs] = useState({});
-  const [skillsArray, setSkillsArray] = useState([]);
-
+  const dispatch = useDispatch();
+  const firstname = useSelector((state) => state.user.value.firstname)
+  const lastname = useSelector((state) => state.user.value.lastname)
   const handleChange = (e) => {
     e.preventDefault();
     const name = e.target.name;
     const value = e.target.value;
     setInputs(values => ({...values, [name]: value}));
   }
-
-useEffect(() => {
-  if(inputs && inputs.skills)
-  setSkillsArray(inputs.skills.split(','));
-},[inputs])
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(JSON.stringify(inputs))
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>Ecris ton prénom :
+      <label>Ecris ton prénom {firstname} :
       <input 
         type="text" 
         name="firstname" 
@@ -48,11 +43,19 @@ useEffect(() => {
           onChange={handleChange}
         />
         </label>
-        <input type="submit" />
-        <p>{inputs?.firstname}</p>
-        <p>{inputs?.lastname}</p>
-        <p>{inputs?.skills}</p>
-        <div>{skillsArray.map((skill, index) => <p key={index}>{skill}</p>)}</div>
+        <input type="submit" onClick={() => {
+          dispatch(
+            changeNames({
+              firstname:inputs.firstname,
+              lastname:inputs.lastname,
+              fullname: firstname && lastname ? inputs.firstname + ' ' + inputs.lastname : ''
+          }));
+          dispatch(
+            changeSkills({
+              skills:inputs.skills
+            })
+          );
+        }}/>
     </form>
   )
 }
