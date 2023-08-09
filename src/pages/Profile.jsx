@@ -6,7 +6,6 @@ export const Profile = () => {
   const [inputs, setInputs] = useState({});
   const dispatch = useDispatch();
   const firstname = useSelector((state) => state.user.value.firstname)
-  const lastname = useSelector((state) => state.user.value.lastname)
   const handleChange = (e) => {
     e.preventDefault();
     const name = e.target.name;
@@ -15,6 +14,17 @@ export const Profile = () => {
   }
   const handleSubmit = (e) => {
     e.preventDefault();
+    dispatch(
+      changeNames({
+        firstname:inputs.firstname,
+        lastname:inputs.lastname,
+        fullname: inputs.firstname && inputs.lastname ? inputs.firstname + ' ' + inputs.lastname : ''
+    }))
+    dispatch(
+      changeSkills({
+        skills:inputs.skills
+      })
+    );
   }
 
   return (
@@ -43,19 +53,7 @@ export const Profile = () => {
           onChange={handleChange}
         />
         </label>
-        <input type="submit" onClick={() => {
-          dispatch(
-            changeNames({
-              firstname:inputs.firstname,
-              lastname:inputs.lastname,
-              fullname: firstname && lastname ? inputs.firstname + ' ' + inputs.lastname : ''
-          }));
-          dispatch(
-            changeSkills({
-              skills:inputs.skills
-            })
-          );
-        }}/>
+        <input type="submit" />
     </form>
   )
 }
